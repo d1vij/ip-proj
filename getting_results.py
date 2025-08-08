@@ -8,7 +8,7 @@ DATABASE_NAME = "votes"
 
 CLASSES = [
     "10A",
-    "10B",
+    "10B",r
     "10C",
     "10D",
     "10E",
