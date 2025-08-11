@@ -1,0 +1,116 @@
+$vsc-background: #1E1E1E;
+$offwhite: #F5f5f5;
+
+body {
+    background-color: #D6A99D;
+    min-height: 100vh;
+    min-width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: auto;
+}
+
+
+main {
+    width: 90%;
+    min-height: 90%;
+
+    display: flex;
+    flex-direction:column;
+    justify-content: right;
+    gap: 10px;
+
+    border-radius: 15px;
+
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    
+    background-color: #FBF3D5;
+    padding: 15px;
+    
+}
+
+
+
+.header {
+    width: fit-content;
+    padding: 5px;
+}
+
+.box-around {
+    border-style: solid;
+    border-width: 2px;
+    /* border-color: white; */
+}
+
+// cell styles
+
+.cell {
+    background-color: #D6DAC8;
+    border-radius: 15px;
+    padding: 5px;
+    font-family: "Fira Code";
+    font-size: 15px;
+}
+
+.image {
+    width: 100%;
+    border-radius:15px ;
+    border-style:solid ;
+    border-color:$vsc-background;
+    border-width: 1px;
+    margin:2px;
+}
+
+// custom image arrangements
+div#image-group1{
+    display: flex;
+    height: 500px;
+    
+
+    #sub1 {
+        width: 700px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center ;
+        padding: 5px;
+    }
+}
+
+
+
+// code style
+pre[class*="language-"]{
+    border-radius: 15px;
+    background-color: $vsc-background;
+    margin-inline: 5px;
+    
+    code[class*="language-"] {
+        background-color: inherit;
+        text-shadow: none;
+        font-family: "Fira Code";
+
+        white-space: pre-wrap;
+
+        color: #CFCFCF;
+
+        // highlights
+        .token {
+            &.operator {
+                background-color: inherit;
+            }
+            &.comment {
+                color: #7E8E6F;
+            }
+            &.keyword {
+                color: #82A7C9;
+            }
+            &.number{
+                color:#B3C6A1;
+            }
+            &.boolean{
+                color:#CFCB9C;  
+            }
+        }
+    }
+}
