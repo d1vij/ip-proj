@@ -3,11 +3,13 @@ name: Deploy Vite App to GitHub Pages
 on:
   push:
     branches:
-      - master  # or 'master' if that's your default branch
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # explicitly allow push
 
     steps:
       - name: Checkout code
@@ -16,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18  # or your preferred version
+          node-version: 18
 
       - name: Install dependencies
         run: npm ci
