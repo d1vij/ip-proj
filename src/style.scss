@@ -1,6 +1,7 @@
 $vsc-background: #1E1E1E;
 $offwhite: #F5f5f5;
 
+// 
 body {
     background-color: #D6A99D;
     min-height: 100vh;
@@ -31,6 +32,7 @@ main {
 }
 
 
+// 
 
 .header {
     width: fit-content;
@@ -53,6 +55,11 @@ main {
     font-size: 15px;
 }
 
+.output {
+    display: flex;
+    flex-direction: column;
+}
+
 .image {
     width: 100%;
     border-radius:15px ;
@@ -62,20 +69,6 @@ main {
     margin:2px;
 }
 
-// custom image arrangements
-div#image-group1{
-    display: flex;
-    height: 500px;
-    
-
-    #sub1 {
-        width: 700px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center ;
-        padding: 5px;
-    }
-}
 
 
 
@@ -112,5 +105,25 @@ pre[class*="language-"]{
                 color:#CFCB9C;  
             }
         }
+    }
+}
+
+
+// ---------------------------------------------------------------------------------------
+
+
+
+// custom image arrangements
+div#image-group1{
+    display: flex;
+    height: 500px;
+    
+
+    #sub1 {
+        width: 700px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center ;
+        padding: 5px;
     }
 }
