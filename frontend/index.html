@@ -1,7 +1,7 @@
 <html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>Divij Verma IP Project</title>
 
     <!-- FiraCode Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,103 +10,20 @@
 
     <!-- prism.css -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.min.css">
-    
     <!-- prism.min.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js" integrity="sha512-UOoJElONeUNzQbbKQbjldDf9MwOHqxNz49NNJJ1d90yp+X9edsHyJoAs6O4K19CZGaIdjI5ohK+O2y5lBTW6uQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- prism-python.min.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-python.min.js" integrity="sha512-3qtI9+9JXi658yli19POddU1RouYtkTEhTHo6X5ilOvMiDfNvo6GIS6k2Ukrsx8MyaKSXeVrnIWeyH8G5EOyIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- prism-javascript-min.js -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-javascript.min.js" integrity="sha512-yvw5BDA/GQu8umskpIOBhX2pDLrdOiriaK4kVxtD28QEGLV5rscmCfDjkrx52tIgzLgwzs1FsALV6eYDpGnEkQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <!-- custom stylesheet -->
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="src/style.scss"></head>
 
-    <!--  -->
-    <style>
-        body {
-            background-color: #d6a99d;
-            min-height: 100vh;
-            min-width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            overflow: auto;
-        }
 
-        main {
-            width: 90%;
-            min-height: 90%;
-            display: flex;
-            flex-direction: column;
-            justify-content: right;
-            gap: 10px;
-            border-radius: 15px;
-            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
-            background-color: #fbf3d5;
-            padding: 15px;
-        }
-        
-        /* "cell" may include code & output or html */
-        .cell {
-            background-color: #d6dac8;
-            border-radius: 15px;
-            padding: 5px;
-            font-family: "Fira Code";
-            font-size: 15px;
-        }
+<!-- custom stylesheet -->
 
-        /* output cell */
-        .output {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* images */
-        .image {
-            width: 100%;
-            border-radius: 15px;
-            border-style: solid;
-            border-color: #1e1e1e;
-            border-width: 1px;
-            margin: 2px;
-        }
-
-        /* changing defaults of prism highlighting */
-        pre[class*="language-"] {
-            border-radius: 15px;
-            background-color: #1e1e1e;
-            margin-inline: 5px;
-        }
-
-        pre[class*="language-"] code[class*="language-"] {
-            background-color: inherit;
-            text-shadow: none;
-            font-family: "Fira Code";
-            white-space: pre-wrap;
-            color: #cfcfcf;
-        }
-
-        pre[class*="language-"] code[class*="language-"] .token.operator {
-            background-color: inherit;
-        }
-
-        pre[class*="language-"] code[class*="language-"] .token.comment {
-            color: #7e8e6f;
-        }
-
-        pre[class*="language-"] code[class*="language-"] .token.keyword {
-            color: #82a7c9;
-        }
-
-        pre[class*="language-"] code[class*="language-"] .token.number {
-            color: #b3c6a1;
-        }
-
-        pre[class*="language-"] code[class*="language-"] .token.boolean {
-            color: #cfcb9c;
-        }
-    </style>
-
-</head>
 
 <body>
     <main>
@@ -118,54 +35,10 @@
                 </pre>
                 <div class="output">
 
-<pre>Requirement already satisfied: pandas in ./.venv/lib/python3.12/site-packages (2.3.1)
-Requirement already satisfied: matplotlib in ./.venv/lib/python3.12/site-packages (3.10.5)
-Requirement already satisfied: pymongo in ./.venv/lib/python3.12/site-packages (4.14.0)
-Requirement already satisfied: nbconvert in ./.venv/lib/python3.12/site-packages (7.16.6)
-Requirement already satisfied: numpy&gt;=1.26.0 in ./.venv/lib/python3.12/site-packages (from pandas) (2.3.2)
-Requirement already satisfied: python-dateutil&gt;=2.8.2 in ./.venv/lib/python3.12/site-packages (from pandas) (2.9.0.post0)
-Requirement already satisfied: pytz&gt;=2020.1 in ./.venv/lib/python3.12/site-packages (from pandas) (2025.2)
-Requirement already satisfied: tzdata&gt;=2022.7 in ./.venv/lib/python3.12/site-packages (from pandas) (2025.2)
-Requirement already satisfied: contourpy&gt;=1.0.1 in ./.venv/lib/python3.12/site-packages (from matplotlib) (1.3.3)
-Requirement already satisfied: cycler&gt;=0.10 in ./.venv/lib/python3.12/site-packages (from matplotlib) (0.12.1)
-Requirement already satisfied: fonttools&gt;=4.22.0 in ./.venv/lib/python3.12/site-packages (from matplotlib) (4.59.0)
-Requirement already satisfied: kiwisolver&gt;=1.3.1 in ./.venv/lib/python3.12/site-packages (from matplotlib) (1.4.9)
-Requirement already satisfied: packaging&gt;=20.0 in ./.venv/lib/python3.12/site-packages (from matplotlib) (25.0)
-Requirement already satisfied: pillow&gt;=8 in ./.venv/lib/python3.12/site-packages (from matplotlib) (11.3.0)
-Requirement already satisfied: pyparsing&gt;=2.3.1 in ./.venv/lib/python3.12/site-packages (from matplotlib) (3.2.3)
-Requirement already satisfied: dnspython&lt;3.0.0,&gt;=1.16.0 in ./.venv/lib/python3.12/site-packages (from pymongo) (2.7.0)
-Requirement already satisfied: beautifulsoup4 in ./.venv/lib/python3.12/site-packages (from nbconvert) (4.13.4)
-Requirement already satisfied: bleach!=5.0.0 in ./.venv/lib/python3.12/site-packages (from bleach[css]!=5.0.0-&gt;nbconvert) (6.2.0)
-Requirement already satisfied: defusedxml in ./.venv/lib/python3.12/site-packages (from nbconvert) (0.7.1)
-Requirement already satisfied: jinja2&gt;=3.0 in ./.venv/lib/python3.12/site-packages (from nbconvert) (3.1.6)
-Requirement already satisfied: jupyter-core&gt;=4.7 in ./.venv/lib/python3.12/site-packages (from nbconvert) (5.8.1)
-Requirement already satisfied: jupyterlab-pygments in ./.venv/lib/python3.12/site-packages (from nbconvert) (0.3.0)
-Requirement already satisfied: markupsafe&gt;=2.0 in ./.venv/lib/python3.12/site-packages (from nbconvert) (3.0.2)
-Requirement already satisfied: mistune&lt;4,&gt;=2.0.3 in ./.venv/lib/python3.12/site-packages (from nbconvert) (3.1.3)
-Requirement already satisfied: nbclient&gt;=0.5.0 in ./.venv/lib/python3.12/site-packages (from nbconvert) (0.10.2)
-Requirement already satisfied: nbformat&gt;=5.7 in ./.venv/lib/python3.12/site-packages (from nbconvert) (5.10.4)
-Requirement already satisfied: pandocfilters&gt;=1.4.1 in ./.venv/lib/python3.12/site-packages (from nbconvert) (1.5.1)
-Requirement already satisfied: pygments&gt;=2.4.1 in ./.venv/lib/python3.12/site-packages (from nbconvert) (2.19.2)
-Requirement already satisfied: traitlets&gt;=5.1 in ./.venv/lib/python3.12/site-packages (from nbconvert) (5.14.3)
-Requirement already satisfied: webencodings in ./.venv/lib/python3.12/site-packages (from bleach!=5.0.0-&gt;bleach[css]!=5.0.0-&gt;nbconvert) (0.5.1)
-Requirement already satisfied: tinycss2&lt;1.5,&gt;=1.1.0 in ./.venv/lib/python3.12/site-packages (from bleach[css]!=5.0.0-&gt;nbconvert) (1.4.0)
-Requirement already satisfied: platformdirs&gt;=2.5 in ./.venv/lib/python3.12/site-packages (from jupyter-core&gt;=4.7-&gt;nbconvert) (4.3.8)
-Requirement already satisfied: jupyter-client&gt;=6.1.12 in ./.venv/lib/python3.12/site-packages (from nbclient&gt;=0.5.0-&gt;nbconvert) (8.6.3)
-Requirement already satisfied: fastjsonschema&gt;=2.15 in ./.venv/lib/python3.12/site-packages (from nbformat&gt;=5.7-&gt;nbconvert) (2.21.1)
-Requirement already satisfied: jsonschema&gt;=2.6 in ./.venv/lib/python3.12/site-packages (from nbformat&gt;=5.7-&gt;nbconvert) (4.25.0)
-Requirement already satisfied: six&gt;=1.5 in ./.venv/lib/python3.12/site-packages (from python-dateutil&gt;=2.8.2-&gt;pandas) (1.17.0)
-Requirement already satisfied: soupsieve&gt;1.2 in ./.venv/lib/python3.12/site-packages (from beautifulsoup4-&gt;nbconvert) (2.7)
-Requirement already satisfied: typing-extensions&gt;=4.0.0 in ./.venv/lib/python3.12/site-packages (from beautifulsoup4-&gt;nbconvert) (4.14.1)
-Requirement already satisfied: attrs&gt;=22.2.0 in ./.venv/lib/python3.12/site-packages (from jsonschema&gt;=2.6-&gt;nbformat&gt;=5.7-&gt;nbconvert) (25.3.0)
-Requirement already satisfied: jsonschema-specifications&gt;=2023.03.6 in ./.venv/lib/python3.12/site-packages (from jsonschema&gt;=2.6-&gt;nbformat&gt;=5.7-&gt;nbconvert) (2025.4.1)
-Requirement already satisfied: referencing&gt;=0.28.4 in ./.venv/lib/python3.12/site-packages (from jsonschema&gt;=2.6-&gt;nbformat&gt;=5.7-&gt;nbconvert) (0.36.2)
-Requirement already satisfied: rpds-py&gt;=0.7.1 in ./.venv/lib/python3.12/site-packages (from jsonschema&gt;=2.6-&gt;nbformat&gt;=5.7-&gt;nbconvert) (0.27.0)
-Requirement already satisfied: pyzmq&gt;=23.0 in ./.venv/lib/python3.12/site-packages (from jupyter-client&gt;=6.1.12-&gt;nbclient&gt;=0.5.0-&gt;nbconvert) (27.0.1)
-Requirement already satisfied: tornado&gt;=6.2 in ./.venv/lib/python3.12/site-packages (from jupyter-client&gt;=6.1.12-&gt;nbclient&gt;=0.5.0-&gt;nbconvert) (6.5.2)
-Note: you may need to restart the kernel to use updated packages.
-</pre>
+
                 </div>
                 </div>
+                <hr class="custom">
                 <div class="cell"><h1 class="header box-around">Hello</h1>
 <p style="text-transform: capitalize;">Html test</p></div>
                 <div class="cell">
@@ -187,7 +60,7 @@ import matplotlib.pyplot as plt
 
                 </div>
                 </div>
-                
+                   
                 <div class="cell">
                 <pre class="language-python">                <code class="language-python">
                 
@@ -253,62 +126,46 @@ def replace_spaces(string: str, replace_with=_UNDERSCORE):
                 <div class="cell">
                 <pre class="language-python">                <code class="language-python">
                 
-from typing import TypedDict, List
+def fetch_and_parse(collection_name: str) -&gt; dict:
 
-T_Post_Name = str
-T_Candidate_Name = str
-
-class T_Vote(TypedDict):
-    """indivisual ballot/vote choice"""
-    name: str
-    post: str
-
-
-class T_Vote_Document(TypedDict):
-    """this is how data is stored on server"""
-    token: str
-    vote_data: List[T_Vote]
-
-
-class T_Class_Documents(TypedDict):
-    
-    name: str
-    votes: List[T_Vote]
-
-class T_Classwise_Postwise_Totals(TypedDict):
-    name: str
-    votes: dict[T_Post_Name, dict[T_Candidate_Name, int]]
-                </code>
-                </pre>
-                <div class="output">
-
-
-                </div>
-                </div>
-                
-                <div class="cell">
-                <pre class="language-python">                <code class="language-python">
-                
-def get_classwise_documents() -&gt; List[T_Class_Documents]:
-    # fetches class-wise vote documents from mongodb cluster and returns dictionary with values as array of vote documents
     conn = pymongo.MongoClient(CONNECTION_URL)
-
     database = conn.get_database(DATABASE_NAME)
 
-    all_documents: list[T_Class_Documents] = []
+    RESULTS: dict[str, dict[str, int]] = {}
 
-    vote_document: T_Vote_Document
-    for class_name in CLASSES:
+    collection = database.get_collection(collection_name)
+    found_documents: list[dict] = list(collection.find({}))
 
-        class_documents: List[T_Vote] = []
-        collection = database.get_collection(class_name)
+    for doc in found_documents:
+        vote_data: list[dict[str, str]] = doc["vote_data"]
 
-        for vote_document in collection.find({}):
-            class_documents.append(vote_document["vote_data"])  # type: ignore
+        for vote_obj in vote_data:
+            post = vote_obj["post"]
+            voted_candidate = vote_obj["name"]
 
-        all_documents.append({"name": class_name, "votes": class_documents})
+            # post doesnt exist
+            if post not in RESULTS:
+                RESULTS[post] = {}
 
-    return all_documents
+            # post exists
+            RESULTS[post][voted_candidate] = RESULTS[post].get(voted_candidate, 0) + 1
+
+    return RESULTS
+
+
+def save_to_csv(data: dict, path: str):
+    # create path if it doesnt exists
+    if not (os.path.exists(path)):
+        open(path, "x").close()
+
+    with open(path, "w+") as file:
+
+        writer = csv.writer(file)
+        writer.writerow(["Post", "Candidate", "Total Votes"])
+
+        for postname, candidates in data.items():
+            for name, votes in candidates.items():
+                writer.writerow([postname, name, votes])
                 </code>
                 </pre>
                 <div class="output">
@@ -320,81 +177,68 @@ def get_classwise_documents() -&gt; List[T_Class_Documents]:
                 <div class="cell">
                 <pre class="language-python">                <code class="language-python">
                 
-candidate_data = {
-    "Captain Boy": [
-        "Aadityaraje Desai",
-        "Abhichandra Charke",
-        "Praneel Deshmukh",
-        "Rachit Srivastava",
-    ],
-    "Captain Girl": [
-        "Tvisha Shah",
-        "Gauravi Zade",
-        "Kirthika Jayachander",
-        "Naisha Rastogi",
-    ],
-    "Vice Captain Boy": [
-        "Kausar Chandra",
-        "Sagnik Ghosh",
-        "Avaneesh Mahalle",
-        "Krishna Yadav",
-        "Viren Jadhav",
-    ],
-    "Vice Captain Girl": [
-        "Ketaki Phalle",
-        "Trisha Kandpal",
-        "Riya Shirode",
-        "Kavya Mehta",
-        "Sumedha Vaidya",
-    ],
-}
+file_paths = [
+    os.path.join(os.getcwd(), "class-wise", collection + ".csv")
+    for collection in CLASSES
+]
+
+with open("candidate-data.json", "r") as file:
+    # since all files would have the same posts and candidates
+    # reading the columns from any of it would work
+    candidate_data = json.loads(file.read())
 
 
-# empty dictionary to store totaled votes data
-empty_votes_dict = {
-    post_name: {
-        class_name: {name: 0 for name in candidate_data[post_name]}
-        for class_name in CLASSES
-    }
-    for post_name in candidate_data.keys()
-}
+def compile_single_class(file_path: str):
+    with open(file_path, "r") as file:
+        reader = csv.reader(file)
+
+        # skipping column names row
+        next(reader)
+
+        candidates = {
+            post: {name: 0 for name in names} for post, names in candidate_data.items()
+        }
+        for line in reader:
+            post = line[0]
+            name = line[1]
+            votes = int(line[2])
+            candidates[post][name] = votes
+
+    return candidates
 
 
-def calculate_total_votes_of_class(
-    class_documents: T_Class_Documents,
-) -&gt; T_Classwise_Postwise_Totals:
+def compile_csvs_to_json():
 
-    compiled_votes = {
-        post_name: {candidate_name: 0 for candidate_name in candidate_data[post_name]}
+    # empty dictionary to store the compiled vote data
+    compiled_json = {
+        post_name: {
+            class_name: {name: 0 for name in candidate_data[post_name]}
+            for class_name in CLASSES
+        }
         for post_name in candidate_data.keys()
     }
 
-    vote_sesh: List[T_Vote]
+    for curr_class in CLASSES:
+        class_wise_votes = compile_single_class(
+            os.path.join(os.getcwd(), "class-wise", curr_class + ".csv")
+        )
+        for post, candidates in class_wise_votes.items():
+            for name, votes in candidates.items():
+                compiled_json[post][curr_class][name] += votes
 
-    for vote_sesh in class_documents["votes"]:
-        for vote_document in vote_sesh:
-            post = vote_document["post"]
-            name = vote_document["name"]
-            compiled_votes[post][name] += 1
-
-    return {"name": class_documents["name"], "votes": compiled_votes}
-
-
-def create_dataframes(compiled_votes: list[T_Classwise_Postwise_Totals]):
-
-    # creating empty dataframes
-    dataframes = {
-        post_name: pd.DataFrame(np.nan, CLASSES, candidates)
-        for post_name, candidates in candidate_data.items()
-    }
+    return compiled_json
 
 
-    for _class in compiled_votes:
-        class_name = _class["name"]
+def create_dataframes():
+    compiled = compile_csvs_to_json()
+    dataframes = {}
 
-        for post_name, votes in _class["votes"].items():
-            # print(votes)
-            dataframes[post_name].loc[class_name] = votes
+    for post in compiled:
+        post_dataframe = pd.DataFrame(
+            compiled[post]
+        ).T  # transpose cuz otherwise there would be 31 columns
+        dataframes[post] = post_dataframe
+
     return dataframes
                 </code>
                 </pre>
@@ -403,8 +247,7 @@ def create_dataframes(compiled_votes: list[T_Classwise_Postwise_Totals]):
 
                 </div>
                 </div>
-                <div class="cell">
-<h1 class="header">Simple function to execute and display SQL queries</h1></div>
+                
                 <div class="cell">
                 <pre class="language-python">                <code class="language-python">
                 
@@ -416,8 +259,6 @@ from typing import Union, Literal
 REPR_UNION = Union[Literal["string"], Literal["list"], None]
 QUERY_UNION = Union[None, list[tuple[str]], str, list[str]]
 
-conn = sqlite3.connect(DATABASE_NAME+".db")
-cursor = conn.cursor()
 
 def query(
     query: str,
@@ -472,14 +313,40 @@ def query(
 
                 </div>
                 </div>
-                <div class="cell"><h1 class="header">Running above functions</h1></div>
+                
                 <div class="cell">
                 <pre class="language-python">                <code class="language-python">
                 
-class_wise_documents = get_classwise_documents()
-result_dataframes = create_dataframes(list(map(calculate_total_votes_of_class, class_wise_documents)))
+# NOTE: converting json to csv to again json is redundant and indivisual collections could directly be compiled to final json
+BASE_DIR = os.path.join(os.path.dirname(os.getcwd()), "ip-proj", "class-wise")
+
+if not (os.path.exists("class-wise")):
+    os.mkdir("class-wise")
+
+for collection in CLASSES:
+
+    # try to save that collection
+    try:
+        save_to_csv(
+            fetch_and_parse(collection),
+            os.path.join(BASE_DIR, collection + ".csv"),
+        )
+        print(f"Saved collection : {collection}")
+
+    # gracefully handle any raised exception
+    except Exception as e:
+        print(f"Exception occured in saving {collection} document, Exception: {e}")
+                </code>
+                </pre>
+                <div class="output">
 
 
+                </div>
+                </div>
+                
+                <div class="cell">
+                <pre class="language-python">                <code class="language-python">
+                
 result_dataframes = create_dataframes()
 print("Found Posts", *result_dataframes.keys(), sep="\n")
                 </code>
@@ -489,7 +356,7 @@ print("Found Posts", *result_dataframes.keys(), sep="\n")
 
                 </div>
                 </div>
-                <div class="cell"><h1 class="header">Saving to local Sqlite Database</h1></div>
+                
                 <div class="cell">
                 <pre class="language-python">                <code class="language-python">
                 
@@ -507,7 +374,7 @@ for name, post_df in result_dataframes.items():
 
                 </div>
                 </div>
-                <div class="cell"><h1 class="header">Doing pandas stuff</h1></div>
+                
                 <div class="cell">
                 <pre class="language-python">                <code class="language-python">
                 
@@ -565,7 +432,7 @@ for post_name, post_df in result_dataframes.items():
 
                 </div>
                 </div>
-                <div class="cell"><h3 class="header">Equivalent SQL query</h3></div>
+                
                 <div class="cell">
                 <pre class="language-python">                <code class="language-python">
                 
@@ -600,7 +467,7 @@ for post_name, post_df in result_dataframes.items():
 
                 </div>
                 </div>
-                <div class="cell"><h3 class="header">Equivalent SQL query</h3></div>
+                
                 <div class="cell">
                 <pre class="language-python">                <code class="language-python">
                 
@@ -826,19 +693,11 @@ plt.show()
 
                 </div>
                 </div>
-                <div class="cell"><hr class="custom"></div>
+                
                 <div class="cell">
                 <pre class="language-python">                <code class="language-python">
                 
-"""
-Rank correlation
-See if voters who supported Candidate A also tended to support Candidate B.
-
-"""
-
-# constructing votes matrix
-
-
+print(f"Runtime of {(time() - start_time):.2f} seconds")
                 </code>
                 </pre>
                 <div class="output">
@@ -850,12 +709,11 @@ See if voters who supported Candidate A also tended to support Candidate B.
                 <div class="cell">
                 <pre class="language-python">                <code class="language-python">
                 
-%%capture
 # converting this notebook to html document
 import subprocess
 
-subprocess.run(["npx", "tsc"], cwd="ipynb-to-html-converter-and-styler", capture_output=False)
-subprocess.run(["node", "parser.js"], cwd="ipynb-to-html-converter-and-styler", capture_output=False)
+subprocess.run(["npx", "tsc"], cwd="parser", capture_output=False)
+subprocess.run(["node", "parser.js"], cwd="parser", capture_output=False)
                 </code>
                 </pre>
                 <div class="output">
@@ -863,7 +721,7 @@ subprocess.run(["node", "parser.js"], cwd="ipynb-to-html-converter-and-styler", 
 
                 </div>
                 </div>
-                </main>
+    </main>
 
 
 </body></html>

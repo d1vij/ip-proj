@@ -1,6 +1,6 @@
 $vsc-background: #1E1E1E;
 $offwhite: #F5f5f5;
-
+$cell-color: #D6DAC8;
 // 
 body {
     background-color: #D6A99D;
@@ -18,17 +18,17 @@ main {
     min-height: 90%;
 
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     justify-content: right;
     gap: 10px;
 
     border-radius: 15px;
 
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
-    
+
     background-color: #FBF3D5;
     padding: 15px;
-    
+
 }
 
 
@@ -37,6 +37,7 @@ main {
 .header {
     width: fit-content;
     padding: 5px;
+    margin: 0;
 }
 
 .box-around {
@@ -45,10 +46,22 @@ main {
     /* border-color: white; */
 }
 
+hr.custom {
+    width: 100%;
+    border-style:dotted ;
+    border-bottom: none;
+    border-width: 4px;
+    
+    border-left: 0;
+    border-right: 0;
+
+    border-color: darken($color: $cell-color, $amount: 25);
+}
+
 // cell styles
 
 .cell {
-    background-color: #D6DAC8;
+    background-color: $cell-color;
     border-radius: 15px;
     padding: 5px;
     font-family: "Fira Code";
@@ -62,22 +75,41 @@ main {
 
 .image {
     width: 100%;
-    border-radius:15px ;
-    border-style:solid ;
-    border-color:$vsc-background;
+    border-radius: 15px;
+    border-style: solid;
+    border-color: $vsc-background;
     border-width: 1px;
-    margin:2px;
+    margin: 2px;
+}
+
+.text-box {
+    display: flex;
+    flex-direction: column;
+
+    p.text {
+        margin: 0;
+    }
+
+    &.bulleted {
+        p.text::before {
+            margin: 0;
+            content: "*";
+            padding-inline-end: 10px;
+        }
+    }
 }
 
 
 
 
+
+
 // code style
-pre[class*="language-"]{
+pre[class*="language-"] {
     border-radius: 15px;
     background-color: $vsc-background;
     margin-inline: 5px;
-    
+
     code[class*="language-"] {
         background-color: inherit;
         text-shadow: none;
@@ -92,17 +124,21 @@ pre[class*="language-"]{
             &.operator {
                 background-color: inherit;
             }
+
             &.comment {
                 color: #7E8E6F;
             }
+
             &.keyword {
                 color: #82A7C9;
             }
-            &.number{
-                color:#B3C6A1;
+
+            &.number {
+                color: #B3C6A1;
             }
-            &.boolean{
-                color:#CFCB9C;  
+
+            &.boolean {
+                color: #CFCB9C;
             }
         }
     }
@@ -114,16 +150,3 @@ pre[class*="language-"]{
 
 
 // custom image arrangements
-div#image-group1{
-    display: flex;
-    height: 500px;
-    
-
-    #sub1 {
-        width: 700px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center ;
-        padding: 5px;
-    }
-}
