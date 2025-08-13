@@ -1,6 +1,7 @@
 $vsc-background: #1E1E1E;
 $offwhite: #F5f5f5;
 $cell-color: #D6DAC8;
+
 // 
 body {
     background-color: #D6A99D;
@@ -48,10 +49,10 @@ main {
 
 hr.custom {
     width: 100%;
-    border-style:dotted ;
+    border-style: dotted;
     border-bottom: none;
     border-width: 4px;
-    
+
     border-left: 0;
     border-right: 0;
 
@@ -87,8 +88,13 @@ hr.custom {
     flex-direction: column;
 
     p.text {
-        margin: 0;
+        display: flex;
+        flex-direction: row;
+        margin: 1px;
+        align-items: center;
+        gap: 1em;
     }
+
 
     &.bulleted {
         p.text::before {
@@ -99,10 +105,15 @@ hr.custom {
     }
 }
 
-
-
-
-
+em {
+    border-style: solid;
+    width: fit-content;
+    padding-inline: 4px;
+    border-width: 2px;
+    border-radius: 5px;
+    background-color: rgba(255, 192, 0, 0.25);
+    border-color: #8B8000;
+}
 
 // code style
 pre[class*="language-"] {
