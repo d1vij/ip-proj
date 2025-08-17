@@ -15,7 +15,7 @@
 
     <!-- prism.css -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.min.css">
-    
+
     <!-- prism.min.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js"
         integrity="sha512-UOoJElONeUNzQbbKQbjldDf9MwOHqxNz49NNJJ1d90yp+X9edsHyJoAs6O4K19CZGaIdjI5ohK+O2y5lBTW6uQ=="
@@ -31,6 +31,15 @@
 
     <!--  -->
     <style>
+        /* for printing */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 3mm 3mm;
+
+            }
+        }
+
         body {
             background-color: #d6a99d;
             min-height: 100vh;
@@ -38,11 +47,12 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            overflow: auto;
+            overflow-x: hidden;
         }
 
+
         main {
-            width: 90%;
+            width: 80%;
             min-height: 90%;
             display: flex;
             flex-direction: column;
@@ -53,14 +63,24 @@
             background-color: #fbf3d5;
             padding: 15px;
         }
-        
+
         /* "cell" may include code & output or html */
         .cell {
             background-color: #d6dac8;
             border-radius: 15px;
             padding: 5px;
-            font-family: "Fira Code";
+
+            font-family: "Fira Code", monospace;
             font-size: 15px;
+
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        /* Prism.js specific fix for strings */
+        .cell .token.string {
+            word-break: break-word;
+            overflow-wrap: anywhere;
         }
 
         /* output cell */
@@ -118,21 +138,21 @@
         .text-box {
             display: flex;
             flex-direction: column;
+            gap: 2px;
         }
 
         .text-box p.text {
-            display: flex;
-            flex-direction: row;
             margin: 1px;
             align-items: center;
-            gap: 1em;
+            font-size: 16px;
+            font-optical-sizing: auto;
         }
 
         em {
             border-style: solid;
             width: fit-content;
             padding-inline: 4px;
-            border-width: 2px;
+            border-width: 1px;
             border-radius: 5px;
             background-color: rgba(255, 192, 0, 0.25);
             border-color: #8B8000;
@@ -144,6 +164,19 @@
             padding-inline-end: 10px;
         }
 
+        .underlined {
+            text-decoration: underline;
+        }
+
+        .comment {
+            color: #7e8e6f;
+        }
+
+        .header {
+            width: fit-content;
+            padding: 5px;
+            margin: 0;
+        }
     </style>
 
 </head>

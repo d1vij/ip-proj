@@ -75,3 +75,55 @@ for collection in CLASSES:
     # gracefully handle any raised exception
     except Exception as e:
         print(f"Exception occured in saving {collection} document, Exception: {e}")
+
+
+        # classes where the candidate has 0 votes
+for post_name, post_df in result_dataframes.items():
+    print("\n", post_name, sep="")
+    for name in post_df.columns:
+        candidate_series = post_df[name]
+        empty_vote_classes = candidate_series[candidate_series == 0].index
+
+        print(
+            f"{(name)} got zero votes in classes->",
+            *empty_vote_classes,
+        )
+
+
+
+"""
+<!-- <div class="text-box bulleted">
+    <p class="text">The <em>candidate_data</em> dictionary defines all candidates for each post in the election, stored
+        as a mapping of post name to list of candidate names.</p>
+    <pre class="language-js">
+        <code class="language-js">
+<span class="comment">// Example snippet of candidate_data</span>
+{
+    "Captain Boy": [
+        "Aadityaraje Desai",
+        "Abhichandra Charke",
+        "Praneel Deshmukh",
+        "Rachit Srivastava"
+    ],
+    "Captain Girl": [
+        "Tvisha Shah",
+        "Gauravi Zade",
+        "Kirthika Jayachander",
+        "Naisha Rastogi"
+    ],
+    ...
+}
+        </code>
+    </pre> -->
+    <!-- <p class="text">Each post contains a list of students contesting for that position.</p></div> --> 
+<!-- <div class="text-box bulleted">
+    <p class="text"><em class="underlined">empty_votes_dict</em> → This dictionary initializes vote counts for each candidate under each post, grouped by <em>class</em>.</p>
+    <p class="text">Structure:</p>
+    <ol>
+        <li><em class="underlined">post_name</em> → The post being contested (e.g., <em>Captain Boy</em>)</li>
+        <li><em class="underlined">class_name</em> → Each class in <em>CLASSES</em></li>
+        <li><em class="underlined">candidate_name</em> → Count initialized to <code>0</code></li>
+    </ol>
+</div> -->
+
+"""

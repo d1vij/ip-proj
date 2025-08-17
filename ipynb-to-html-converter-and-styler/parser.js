@@ -25,28 +25,11 @@ async function main() {
                     }
                     else if (output.type == "image") {
                         const id = nanoid(5);
-                        outputsHTML.push(`
-                            <div id="${id}">
-                            <img class="image" src="data:image/png;base64,${output.dataUrl}" data-parent-id="${id}">
-                            </div>
-                            `);
+                        outputsHTML.push(`<div id="${id}"><img class="image" src="data:image/png;base64,${output.dataUrl}" data-parent-id="${id}"></div>`);
                     }
                 }
             }
-            htmlArray.push(`
-                <div class="cell">
-                <pre class="language-python">
-                <code class="language-python">
-                
-${sanitizeHTML(cell.text)}
-                </code>
-                </pre>
-                <div class="output">
-
-${outputsHTML.join('')}
-                </div>
-                </div>
-                `);
+            htmlArray.push(`<div class="cell"><pre class="language-python"><code class="language-python">${sanitizeHTML(cell.text)}</code></pre><div class="output">${outputsHTML.join('')}</div></div>`);
         }
         else if (cell.cell_type == "html") {
             htmlArray.push(`<div class="cell">${cell.userHtml}</div>`);
