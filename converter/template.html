@@ -31,50 +31,51 @@
 
     <!--  -->
     <style>
-        /* for printing */
         @media print {
             @page {
-                size: A4 landscape;
+                size: A4;
                 margin: 3mm 3mm;
-
             }
         }
 
         body {
             background-color: #d6a99d;
-            min-height: 100vh;
-            min-width: 100vw;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            overflow-x: hidden;
+            margin: 0;
+            padding: 5px;
         }
-
 
         main {
-            width: 80%;
-            min-height: 90%;
+            width: 210mm;
+            height: fit-content;
+            max-width: 100%;
+            padding: 4mm;
+            box-sizing: border-box;
+            background-color: #fbf3d5;
+            border-radius: 15px;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
+                rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
             display: flex;
             flex-direction: column;
-            justify-content: right;
-            gap: 10px;
-            border-radius: 15px;
-            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
-            background-color: #fbf3d5;
-            padding: 15px;
+            gap: 2.6mm;
         }
-
+    </style>
+    <style>
         /* "cell" may include code & output or html */
         .cell {
             background-color: #d6dac8;
             border-radius: 15px;
             padding: 5px;
-
             font-family: "Fira Code", monospace;
-            font-size: 15px;
-
+            font-size: 14px;
             white-space: pre-wrap;
             overflow-wrap: anywhere;
+        }
+
+        .output {
+            font-size: 14px;
+
         }
 
         /* Prism.js specific fix for strings */
@@ -135,6 +136,10 @@
         }
     </style>
     <style>
+        .size-a4 {
+            height: 297mm;
+        }
+
         .text-box {
             display: flex;
             flex-direction: column;
@@ -144,7 +149,7 @@
         .text-box p.text {
             margin: 1px;
             align-items: center;
-            font-size: 16px;
+            font-size: 15px;
             font-optical-sizing: auto;
         }
 
@@ -178,12 +183,80 @@
             margin: 0;
         }
     </style>
+    <style>
+        #title-page,
+        #certificate-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 280mm;
+        }
 
+        #dav-logo {
+            /* margin-top: 10px; */
+            height: 60mm;
+            margin-bottom: 15mm;
+        }
+
+        #school-name {
+            font-size: 40px;
+        }
+
+        #title-page-text p.text,
+        #cert-pg-text p.text {
+            text-align: center;
+            width: 140mm;
+            font-size: 20pt;
+            margin: 2mm 0;
+        }
+
+        #title-page-text{
+            margin-top: 10px;
+        }
+        
+        #title-page-by{
+            margin-top: 10mm;
+        }
+        
+        #title-page-by p.text{
+            font-size: 20px;
+        }
+        #teachers {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            margin-top: 150px;
+            align-items: center;
+            text-align: center;
+            justify-content: space-between;
+        }
+
+        #teachers p.text {
+            margin-inline: 15px;
+            font-size: 14pt;
+        }
+
+        .votes{
+             font-size: 10px;
+        }
+    </style>
 </head>
-
 <body>
     <main>
-
+        <div id="title-page" class="cell">
+            <img id="dav-logo" src="https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/DAV_CMC_Logo.svg/640px-DAV_CMC_Logo.svg.png" alt="">
+                <h1 class="header" id="school-name">DAV Public School, Pune</h1>
+                <div class="text-box" id="title-page-text">
+                    <p class="text" id="ip">Informatics Practices</p>
+                    <p class="text" id="recfile">Statistical Insights into Election Results</p>
+                </div>
+                <div class="text-box" id="title-page-by">
+                    <p class="text" id="name">Name -&gt; <em>Divij Verma</em></p>
+                    <p class="text">Class -&gt; <em>12 A</em></p>
+                    <p class="text">Board Rollnumber -&gt; <em>123123123</em></p>
+                </div>
+        </div>
     </main>
 </body>
 

@@ -1,0 +1,490 @@
+import { readFile, writeFile } from "fs/promises";
+import { nanoid } from "nanoid";
+import { JSDOM } from "jsdom";
+// parses and converts jupyter notebooks to html allowing custom css styling for notebooks 
+// was too lazy to copy paste the code
+const notebookSourcePath = "../proj-nb.ipynb";
+const outputHtmlPath = "../index.html";
+
+
+
+async function main() {
+    const content = await readFile(notebookSourcePath, { encoding: "utf-8" });
+    const __json = JSON.parse(content);
+    const cells = [];
+    const htmlArray = [];
+    for (const cell of __json["cells"]) {
+        const data = getDataOfCell(cell);
+        cells.push(data);
+        // console.log(data)
+    }
+    for (const cell of cells) {
+        if (cell.cell_type == "code") {
+            const outputsHTML = [];
+            if (cell.outputs != undefined) {
+                for (const output of cell.outputs) {
+                    if (output.type == "text") {
+                        outputsHTML.push(`<pre>${output.content}</pre>`);
+                    }
+                    else if (output.type == "image") {
+                        const id = nanoid(5);
+                        outputsHTML.push(`<div id="${id}"><img class="image" src="data:image/png;base64,${output.dataUrl}" data-parent-id="${id}"></div>`);
+                    }
+                }
+            }
+            htmlArray.push(`<div class="cell"><pre class="language-python"><code class="language-python">${sanitizeHTML(cell.text)}</code></pre><div class="output">${outputsHTML.join('')}</div></div>`);
+        }
+        else if (cell.cell_type == "html") {
+            htmlArray.push(`<div class="cell">${cell.userHtml}</div>`);
+        }
+    }
+    const template = await readFile("template.html", { encoding: "utf-8" });
+    const domTree = (new JSDOM(template)).window.document;
+    const mainElm = domTree.querySelector("main");
+    mainElm.innerHTML = htmlArray.join('') + __csv;
+    const finalHtml = domTree.documentElement.outerHTML;
+    await writeFile(outputHtmlPath, finalHtml);
+    console.log("file written at " + outputHtmlPath);
+}
+// 
+function getDataOfCell(cellObj) {
+    let content;
+    let cell_type;
+    let outputs = [];
+    let userHtml;
+    if (cellObj.metadata.vscode?.languageId == "html") {
+        userHtml = cellObj.source?.filter(ln => ln.trim() != "%%script false --no-raise-error")?.join('') || "EMPTY";
+        cell_type = "html";
+    }
+    else if (cellObj.cell_type == "code") {
+        cell_type = "code";
+        content = cellObj.source?.join('') || 'EMPTY';
+        if (cellObj.outputs?.length != undefined && cellObj.outputs.length > 0) {
+            for (const __output of cellObj.outputs) {
+                if (__output.output_type == "stream") {
+                    console.log("* Found Text output");
+                    const content = __output.text?.join("") || "EMPTY";
+                    outputs.push({
+                        "type": "text",
+                        content
+                    });
+                }
+                else if (__output.output_type == "display_data") {
+                    console.log("* Found image");
+                    outputs.push({
+                        type: "image",
+                        dataUrl: __output.data?.["image/png"] //assuming all images would be pngs
+                    });
+                }
+            }
+        }
+    }
+    return {
+        outputs,
+        cell_type,
+        text: content,
+        userHtml
+    };
+}
+// 
+function sanitizeHTML(__string) {
+    return __string
+        .replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&#39;");
+}
+// 
+main().catch(console.log);
+
+
+const __csv = `<div class="votes cell a4"><pre class="language-py"><code class="language-py">index,Captain Boy,Captain Girl,Vice Captain Boy,Vice Captain Girl
+0,Aadityaraje Desai,Tvisha Shah,Kausar Chandra,Ketaki Phalle
+1,Abhichandra Charke,Tvisha Shah,Sagnik Ghosh,Ketaki Phalle
+2,Aadityaraje Desai,Tvisha Shah,Avaneesh Mahalle,Trisha Kandpal
+3,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Riya Shirode
+4,Abhichandra Charke,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+5,Abhichandra Charke,Gauravi Zade,Kausar Chandra,Kavya Mehta
+6,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+7,Aadityaraje Desai,Kirthika Jayachander,Avaneesh Mahalle,Trisha Kandpal
+8,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Trisha Kandpal
+9,Aadityaraje Desai,Naisha Rastogi,Krishna Yadav,Trisha Kandpal
+10,Abhichandra Charke,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+11,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+12,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+13,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Sumedha Vaidya
+14,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Sumedha Vaidya
+15,Praneel Deshmukh,Gauravi Zade,Sagnik Ghosh,Sumedha Vaidya
+16,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Sumedha Vaidya
+17,Praneel Deshmukh,Naisha Rastogi,Kausar Chandra,Ketaki Phalle
+18,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Sumedha Vaidya
+19,Praneel Deshmukh,Tvisha Shah,Kausar Chandra,Trisha Kandpal
+20,Abhichandra Charke,Tvisha Shah,Sagnik Ghosh,Ketaki Phalle
+21,Abhichandra Charke,Naisha Rastogi,Kausar Chandra,Kavya Mehta
+22,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Kavya Mehta
+23,Abhichandra Charke,Gauravi Zade,Viren Jadhav,Kavya Mehta
+24,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Kavya Mehta
+25,Praneel Deshmukh,Gauravi Zade,Viren Jadhav,Kavya Mehta
+26,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+27,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+28,Praneel Deshmukh,Gauravi Zade,Sagnik Ghosh,Sumedha Vaidya
+29,Abhichandra Charke,Gauravi Zade,Sagnik Ghosh,Sumedha Vaidya
+30,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+31,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Kavya Mehta
+32,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+33,Abhichandra Charke,Gauravi Zade,Viren Jadhav,Ketaki Phalle
+34,Abhichandra Charke,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+35,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+36,Praneel Deshmukh,Tvisha Shah,Viren Jadhav,Kavya Mehta
+37,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+38,Abhichandra Charke,Gauravi Zade,Sagnik Ghosh,Ketaki Phalle
+39,Praneel Deshmukh,Gauravi Zade,Sagnik Ghosh,Ketaki Phalle
+40,Abhichandra Charke,Gauravi Zade,Krishna Yadav,Kavya Mehta
+41,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+42,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+43,Praneel Deshmukh,Naisha Rastogi,Kausar Chandra,Trisha Kandpal
+44,Praneel Deshmukh,Naisha Rastogi,Kausar Chandra,Trisha Kandpal
+45,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Kavya Mehta
+46,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+47,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+48,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+49,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+50,Praneel Deshmukh,Naisha Rastogi,Krishna Yadav,Ketaki Phalle
+51,Praneel Deshmukh,Naisha Rastogi,Kausar Chandra,Ketaki Phalle
+52,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Kavya Mehta
+53,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Kavya Mehta
+54,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Trisha Kandpal
+55,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+56,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+57,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+58,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+59,Aadityaraje Desai,Gauravi Zade,Sagnik Ghosh,Trisha Kandpal
+60,Aadityaraje Desai,Kirthika Jayachander,Viren Jadhav,Ketaki Phalle
+61,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Trisha Kandpal
+62,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Ketaki Phalle
+63,Aadityaraje Desai,Gauravi Zade,Sagnik Ghosh,Trisha Kandpal
+64,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+65,Aadityaraje Desai,Naisha Rastogi,Sagnik Ghosh,Sumedha Vaidya
+66,Rachit Srivastava,Kirthika Jayachander,Sagnik Ghosh,Riya Shirode
+67,Praneel Deshmukh,Naisha Rastogi,Krishna Yadav,Ketaki Phalle
+68,Aadityaraje Desai,Naisha Rastogi,Krishna Yadav,Ketaki Phalle
+69,Aadityaraje Desai,Naisha Rastogi,Viren Jadhav,Ketaki Phalle
+70,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+71,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+72,Rachit Srivastava,Gauravi Zade,Viren Jadhav,Ketaki Phalle
+73,Praneel Deshmukh,Gauravi Zade,Viren Jadhav,Ketaki Phalle
+74,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+75,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+76,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+77,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+78,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+79,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+80,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+81,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+82,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Trisha Kandpal
+83,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Trisha Kandpal
+84,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+85,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+86,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+87,Praneel Deshmukh,Tvisha Shah,Avaneesh Mahalle,Trisha Kandpal
+88,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+89,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Trisha Kandpal
+90,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+91,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Sumedha Vaidya
+92,Praneel Deshmukh,Tvisha Shah,Sagnik Ghosh,Trisha Kandpal
+93,Praneel Deshmukh,Gauravi Zade,Sagnik Ghosh,Kavya Mehta
+94,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Trisha Kandpal
+95,Aadityaraje Desai,Kirthika Jayachander,Avaneesh Mahalle,Sumedha Vaidya
+96,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+97,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+98,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+99,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Sumedha Vaidya
+100,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Sumedha Vaidya
+101,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+102,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Trisha Kandpal
+103,Praneel Deshmukh,Naisha Rastogi,Kausar Chandra,Trisha Kandpal
+104,Praneel Deshmukh,Gauravi Zade,Sagnik Ghosh,Trisha Kandpal
+105,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Sumedha Vaidya
+106,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+107,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+108,Aadityaraje Desai,Kirthika Jayachander,Krishna Yadav,Trisha Kandpal
+109,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+110,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+111,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Trisha Kandpal
+112,Praneel Deshmukh,Gauravi Zade,Sagnik Ghosh,Trisha Kandpal
+113,Praneel Deshmukh,Naisha Rastogi,Krishna Yadav,Ketaki Phalle
+114,Abhichandra Charke,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+115,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+116,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+117,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+118,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+119,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Trisha Kandpal
+120,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+121,Praneel Deshmukh,Naisha Rastogi,Kausar Chandra,Ketaki Phalle
+122,Abhichandra Charke,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+123,Praneel Deshmukh,Kirthika Jayachander,Sagnik Ghosh,Sumedha Vaidya
+124,Aadityaraje Desai,Gauravi Zade,Sagnik Ghosh,Sumedha Vaidya
+125,Aadityaraje Desai,Gauravi Zade,Sagnik Ghosh,Sumedha Vaidya
+126,Praneel Deshmukh,Gauravi Zade,Sagnik Ghosh,Sumedha Vaidya
+127,Aadityaraje Desai,Tvisha Shah,Sagnik Ghosh,Sumedha Vaidya
+128,Aadityaraje Desai,Naisha Rastogi,Sagnik Ghosh,Ketaki Phalle
+129,Rachit Srivastava,Naisha Rastogi,Kausar Chandra,Ketaki Phalle
+130,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+131,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Riya Shirode
+132,Praneel Deshmukh,Naisha Rastogi,Viren Jadhav,Ketaki Phalle
+133,Aadityaraje Desai,Naisha Rastogi,Viren Jadhav,Ketaki Phalle
+134,Aadityaraje Desai,Tvisha Shah,Avaneesh Mahalle,Ketaki Phalle
+135,Abhichandra Charke,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+136,Praneel Deshmukh,Tvisha Shah,Krishna Yadav,Kavya Mehta
+137,Rachit Srivastava,Tvisha Shah,Avaneesh Mahalle,Ketaki Phalle
+138,Aadityaraje Desai,Tvisha Shah,Avaneesh Mahalle,Ketaki Phalle
+139,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+140,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+141,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+142,Aadityaraje Desai,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+143,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+144,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+145,Aadityaraje Desai,Naisha Rastogi,Kausar Chandra,Trisha Kandpal
+146,Abhichandra Charke,Naisha Rastogi,Kausar Chandra,Trisha Kandpal
+147,Praneel Deshmukh,Kirthika Jayachander,Avaneesh Mahalle,Trisha Kandpal
+148,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Sumedha Vaidya
+149,Rachit Srivastava,Gauravi Zade,Krishna Yadav,Trisha Kandpal
+150,Praneel Deshmukh,Naisha Rastogi,Krishna Yadav,Kavya Mehta
+151,Abhichandra Charke,Gauravi Zade,Krishna Yadav,Kavya Mehta
+152,Praneel Deshmukh,Tvisha Shah,Krishna Yadav,Kavya Mehta
+153,Aadityaraje Desai,Tvisha Shah,Avaneesh Mahalle,Kavya Mehta
+154,Aadityaraje Desai,Tvisha Shah,Avaneesh Mahalle,Kavya Mehta
+155,Aadityaraje Desai,Tvisha Shah,Avaneesh Mahalle,Kavya Mehta
+156,Abhichandra Charke,Kirthika Jayachander,Kausar Chandra,Ketaki Phalle
+157,Praneel Deshmukh,Tvisha Shah,Kausar Chandra,Kavya Mehta
+158,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+159,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+160,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+161,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+162,Aadityaraje Desai,Kirthika Jayachander,Kausar Chandra,Kavya Mehta
+163,Aadityaraje Desai,Kirthika Jayachander,Kausar Chandra,Ketaki Phalle
+164,Praneel Deshmukh,Kirthika Jayachander,Krishna Yadav,Riya Shirode
+165,Aadityaraje Desai,Kirthika Jayachander,Sagnik Ghosh,Sumedha Vaidya
+166,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+167,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+168,Rachit Srivastava,Kirthika Jayachander,Krishna Yadav,Kavya Mehta
+169,Rachit Srivastava,Tvisha Shah,Viren Jadhav,Ketaki Phalle
+170,Rachit Srivastava,Tvisha Shah,Kausar Chandra,Riya Shirode
+171,Praneel Deshmukh,Tvisha Shah,Avaneesh Mahalle,Kavya Mehta
+172,Praneel Deshmukh,Naisha Rastogi,Viren Jadhav,Ketaki Phalle
+173,Praneel Deshmukh,Tvisha Shah,Sagnik Ghosh,Ketaki Phalle
+174,Praneel Deshmukh,Naisha Rastogi,Kausar Chandra,Trisha Kandpal
+175,Praneel Deshmukh,Kirthika Jayachander,Kausar Chandra,Ketaki Phalle
+176,Praneel Deshmukh,Tvisha Shah,Kausar Chandra,Sumedha Vaidya
+177,Praneel Deshmukh,Tvisha Shah,Sagnik Ghosh,Ketaki Phalle
+178,Praneel Deshmukh,Tvisha Shah,Viren Jadhav,Riya Shirode
+179,Praneel Deshmukh,Gauravi Zade,Viren Jadhav,Riya Shirode
+180,Aadityaraje Desai,Naisha Rastogi,Krishna Yadav,Trisha Kandpal
+181,Aadityaraje Desai,Naisha Rastogi,Kausar Chandra,Trisha Kandpal
+182,Abhichandra Charke,Naisha Rastogi,Kausar Chandra,Trisha Kandpal
+183,Aadityaraje Desai,Naisha Rastogi,Krishna Yadav,Kavya Mehta
+184,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Trisha Kandpal
+185,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Trisha Kandpal
+186,Abhichandra Charke,Naisha Rastogi,Kausar Chandra,Trisha Kandpal
+187,Abhichandra Charke,Naisha Rastogi,Krishna Yadav,Ketaki Phalle
+188,Abhichandra Charke,Naisha Rastogi,Sagnik Ghosh,Kavya Mehta
+189,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+190,Aadityaraje Desai,Tvisha Shah,Kausar Chandra,Ketaki Phalle
+191,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Sumedha Vaidya
+192,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Trisha Kandpal
+193,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Trisha Kandpal
+194,Rachit Srivastava,Gauravi Zade,Krishna Yadav,Sumedha Vaidya
+195,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Trisha Kandpal
+196,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Trisha Kandpal
+197,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Trisha Kandpal
+198,Aadityaraje Desai,Gauravi Zade,Sagnik Ghosh,Trisha Kandpal
+199,Praneel Deshmukh,Gauravi Zade,Viren Jadhav,Ketaki Phalle
+200,Praneel Deshmukh,Gauravi Zade,Viren Jadhav,Trisha Kandpal
+201,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+202,Praneel Deshmukh,Gauravi Zade,Viren Jadhav,Ketaki Phalle
+203,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+204,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Trisha Kandpal
+205,Praneel Deshmukh,Kirthika Jayachander,Viren Jadhav,Kavya Mehta
+206,Aadityaraje Desai,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+207,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+208,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+209,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+210,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+211,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+212,Praneel Deshmukh,Kirthika Jayachander,Kausar Chandra,Trisha Kandpal
+213,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Trisha Kandpal
+214,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+215,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+216,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+217,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+218,Abhichandra Charke,Tvisha Shah,Viren Jadhav,Ketaki Phalle
+219,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+220,Abhichandra Charke,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+221,Rachit Srivastava,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+222,Praneel Deshmukh,Tvisha Shah,Avaneesh Mahalle,Ketaki Phalle
+223,Abhichandra Charke,Gauravi Zade,Viren Jadhav,Ketaki Phalle
+224,Abhichandra Charke,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+225,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+226,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Kavya Mehta
+227,Rachit Srivastava,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+228,Rachit Srivastava,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+229,Abhichandra Charke,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+230,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+231,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+232,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+233,Aadityaraje Desai,Naisha Rastogi,Kausar Chandra,Ketaki Phalle
+234,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+235,Aadityaraje Desai,Naisha Rastogi,Kausar Chandra,Ketaki Phalle
+236,Aadityaraje Desai,Naisha Rastogi,Viren Jadhav,Ketaki Phalle
+237,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+238,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+239,Aadityaraje Desai,Gauravi Zade,Sagnik Ghosh,Kavya Mehta
+240,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+241,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+242,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+243,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+244,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+245,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+246,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+247,Aadityaraje Desai,Naisha Rastogi,Krishna Yadav,Kavya Mehta
+248,Aadityaraje Desai,Naisha Rastogi,Krishna Yadav,Kavya Mehta
+249,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+250,Aadityaraje Desai,Naisha Rastogi,Krishna Yadav,Ketaki Phalle
+251,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Kavya Mehta
+252,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Kavya Mehta
+253,Aadityaraje Desai,Gauravi Zade,Sagnik Ghosh,Trisha Kandpal
+254,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+255,Rachit Srivastava,Gauravi Zade,Avaneesh Mahalle,Sumedha Vaidya
+256,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+257,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+258,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+259,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+260,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+261,Abhichandra Charke,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+262,Abhichandra Charke,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+263,Abhichandra Charke,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+264,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Trisha Kandpal
+265,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+266,Aadityaraje Desai,Tvisha Shah,Viren Jadhav,Trisha Kandpal
+267,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Kavya Mehta
+268,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+269,Abhichandra Charke,Tvisha Shah,Avaneesh Mahalle,Ketaki Phalle
+270,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Kavya Mehta
+271,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Riya Shirode
+272,Abhichandra Charke,Naisha Rastogi,Viren Jadhav,Ketaki Phalle
+273,Abhichandra Charke,Gauravi Zade,Viren Jadhav,Ketaki Phalle
+274,Abhichandra Charke,Tvisha Shah,Sagnik Ghosh,Kavya Mehta
+275,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Kavya Mehta
+276,Abhichandra Charke,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+277,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Sumedha Vaidya
+278,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Sumedha Vaidya
+279,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Kavya Mehta
+280,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+281,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+282,Aadityaraje Desai,Naisha Rastogi,Viren Jadhav,Ketaki Phalle
+283,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+284,Abhichandra Charke,Gauravi Zade,Sagnik Ghosh,Trisha Kandpal
+285,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+286,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+287,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+288,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Kavya Mehta
+289,Praneel Deshmukh,Naisha Rastogi,Krishna Yadav,Kavya Mehta
+290,Praneel Deshmukh,Gauravi Zade,Viren Jadhav,Trisha Kandpal
+291,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Sumedha Vaidya
+292,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+293,Abhichandra Charke,Tvisha Shah,Krishna Yadav,Kavya Mehta
+294,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Trisha Kandpal
+295,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+296,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+297,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Kavya Mehta
+298,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Kavya Mehta
+299,Abhichandra Charke,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+300,Praneel Deshmukh,Naisha Rastogi,Viren Jadhav,Ketaki Phalle
+301,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+302,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+303,Rachit Srivastava,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+304,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+305,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Kavya Mehta
+306,Praneel Deshmukh,Naisha Rastogi,Kausar Chandra,Kavya Mehta
+307,Abhichandra Charke,Gauravi Zade,Kausar Chandra,Kavya Mehta
+308,Abhichandra Charke,Naisha Rastogi,Avaneesh Mahalle,Kavya Mehta
+309,Aadityaraje Desai,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+310,Abhichandra Charke,Naisha Rastogi,Kausar Chandra,Kavya Mehta
+311,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+312,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Trisha Kandpal
+313,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Kavya Mehta
+314,Abhichandra Charke,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+315,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+316,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+317,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Trisha Kandpal
+318,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+319,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Kavya Mehta
+320,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+321,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Kavya Mehta
+322,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Kavya Mehta
+323,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Kavya Mehta
+324,Praneel Deshmukh,Gauravi Zade,Viren Jadhav,Trisha Kandpal
+325,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Kavya Mehta
+326,Aadityaraje Desai,Naisha Rastogi,Viren Jadhav,Ketaki Phalle
+327,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+328,Aadityaraje Desai,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+329,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Kavya Mehta
+330,Praneel Deshmukh,Naisha Rastogi,Avaneesh Mahalle,Kavya Mehta
+331,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+332,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+333,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+334,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Sumedha Vaidya
+335,Aadityaraje Desai,Gauravi Zade,Sagnik Ghosh,Sumedha Vaidya
+336,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Trisha Kandpal
+337,Aadityaraje Desai,Kirthika Jayachander,Kausar Chandra,Trisha Kandpal
+338,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Trisha Kandpal
+339,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Trisha Kandpal
+340,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+341,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Kavya Mehta
+342,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+343,Praneel Deshmukh,Gauravi Zade,Viren Jadhav,Ketaki Phalle
+344,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Ketaki Phalle
+345,Praneel Deshmukh,Tvisha Shah,Avaneesh Mahalle,Ketaki Phalle
+346,Aadityaraje Desai,Tvisha Shah,Krishna Yadav,Trisha Kandpal
+347,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+348,Aadityaraje Desai,Gauravi Zade,Krishna Yadav,Kavya Mehta
+349,Abhichandra Charke,Gauravi Zade,Krishna Yadav,Ketaki Phalle
+350,Praneel Deshmukh,Naisha Rastogi,Viren Jadhav,Kavya Mehta
+351,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Riya Shirode
+352,Abhichandra Charke,Gauravi Zade,Viren Jadhav,Kavya Mehta
+353,Praneel Deshmukh,Gauravi Zade,Viren Jadhav,Kavya Mehta
+354,Abhichandra Charke,Gauravi Zade,Avaneesh Mahalle,Sumedha Vaidya
+355,Praneel Deshmukh,Gauravi Zade,Sagnik Ghosh,Kavya Mehta
+356,Aadityaraje Desai,Naisha Rastogi,Krishna Yadav,Kavya Mehta
+357,Praneel Deshmukh,Gauravi Zade,Krishna Yadav,Kavya Mehta
+358,Aadityaraje Desai,Gauravi Zade,Viren Jadhav,Trisha Kandpal
+359,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+360,Rachit Srivastava,Kirthika Jayachander,Sagnik Ghosh,Riya Shirode
+361,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Sumedha Vaidya
+362,Aadityaraje Desai,Gauravi Zade,Kausar Chandra,Sumedha Vaidya
+363,Praneel Deshmukh,Tvisha Shah,Sagnik Ghosh,Trisha Kandpal
+364,Aadityaraje Desai,Tvisha Shah,Viren Jadhav,Trisha Kandpal
+365,Aadityaraje Desai,Tvisha Shah,Viren Jadhav,Ketaki Phalle
+366,Rachit Srivastava,Gauravi Zade,Avaneesh Mahalle,Trisha Kandpal
+367,Abhichandra Charke,Naisha Rastogi,Avaneesh Mahalle,Ketaki Phalle
+368,Aadityaraje Desai,Kirthika Jayachander,Avaneesh Mahalle,Ketaki Phalle
+369,Abhichandra Charke,Naisha Rastogi,Viren Jadhav,Ketaki Phalle
+370,Praneel Deshmukh,Tvisha Shah,Kausar Chandra,Sumedha Vaidya
+371,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+372,Aadityaraje Desai,Tvisha Shah,Krishna Yadav,Ketaki Phalle
+373,Abhichandra Charke,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+374,Abhichandra Charke,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+375,Abhichandra Charke,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+376,Praneel Deshmukh,Gauravi Zade,Kausar Chandra,Ketaki Phalle
+377,Abhichandra Charke,Gauravi Zade,Sagnik Ghosh,Sumedha Vaidya
+378,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Ketaki Phalle
+379,Aadityaraje Desai,Naisha Rastogi,Avaneesh Mahalle,Trisha Kandpal
+380,Aadityaraje Desai,Naisha Rastogi,Avaneesh Mahalle,Trisha Kandpal
+381,Praneel Deshmukh,Gauravi Zade,Avaneesh Mahalle,Kavya Mehta
+382,Aadityaraje Desai,Tvisha Shah,Krishna Yadav,Kavya Mehta
+383,Aadityaraje Desai,Kirthika Jayachander,Sagnik Ghosh,Sumedha Vaidya
+384,Praneel Deshmukh,Tvisha Shah,Viren Jadhav,Riya Shirode
+</code>
+</pre>
+</div>`
